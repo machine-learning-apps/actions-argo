@@ -1,4 +1,4 @@
-FROM argoproj/argocli
+FROM google/cloud-sdk
 
 LABEL "com.github.actions.name"="Submit Argo Workflows From GitHub"
 LABEL "com.github.actions.description"="Trigger Argo (https://argoproj.github.io/) workflows from GitHub Actions"
