@@ -1,0 +1,21 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout files in repo
+      uses: actions/checkout@master
+    - name: Submit Argo Workflow From examples/ folder in this repo
+      id: argo
+      uses: machine-learning-apps/actions-argo@master
+      with:
+        argo_url: ${{ secrets.ARGO_URL }}
+        workflow_yaml_path: "examples/coinflip.yaml"
+        parameter_file_path: "examples/arguments-parameters.yaml"
+      env:
+        KUBECONFIG: '/github/workspace/.kube/config'
+    - name: test argo outputs
+      run: echo "Argo URL $WORKFLOW_URL"
+      env:
+        WORKFLOW_URL: ${{ steps.argo.outputs.WORKFLOW_URL }}

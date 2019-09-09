@@ -1,0 +1,23 @@
+name: 'actions-argo'
+description: Trigger an Argo Workflow from GitHub Actions
+author: Hamel Husain
+inputs:
+  argo_url:
+    description: The endpoint where your Argo UI is hosted.  This is used to build the link for dashboard of unique runs. 
+    required: true
+  workflow_yaml_path:
+    description: The full path name including the filename of the YAML file that describes the workflow you want to run on Argo.  This should be relative to the root of the GitHub repository where the Action is triggered.
+    require: true
+  parameter_file_path:
+    description: Parameter file that allows you to change variables in your workflow file.
+    require: false
+    default: ""
+outputs:
+  WORKFLOW_URL:
+    description: URL that is a link to the current run in Argo.
+branding:
+  color: 'purple'
+  icon: 'upload-cloud'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

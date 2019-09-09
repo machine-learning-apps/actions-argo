@@ -1,0 +1,64 @@
+# The coinflip example combines the use of a script result,
+# along with conditionals, to take a dynamic path in the
+# workflow. In this example, depending on the result of the
+# first step, 'flip-coin', the template will either run the
+# 'heads' step or the 'tails' step.
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: coinflip-
+spec:
+  entrypoint: coinflip
+  arguments:
+    parameters:
+    - name: log-level
+      value: INFO
+  templates:
+  - name: coinflip
+    steps:
+    - - name: flip-coin
+        template: flip-coin
+    - - name: heads
+        template: heads
+        when: "{{steps.flip-coin.outputs.result}} == heads"
+        arguments:
+          parameters:
+          - name: heads-message
+            value: "hello1"
+      - name: tails
+        template: tails
+        when: "{{steps.flip-coin.outputs.result}} == tails"
+        arguments:
+          parameters:
+          - name: tails-message
+            value: "hello1"
+
+  - name: flip-coin
+    script:
+      image: python:alpine3.6
+      env:
+      - name: LOG_LEVEL
+        value: "{{workflow.parameters.log-level}}"
+      command: [python]
+      source: |
+        import random
+        result = "heads" if random.randint(0,1) == 0 else "tails"
+        print(result)
+
+  - name: heads
+    inputs:
+      parameters:
+      - name: heads-message
+    container:
+      image: alpine:3.6
+      command: [sh, -c, echo]
+      args: ["{{inputs.parameters.heads-message}}"]
+
+  - name: tails
+    inputs:
+      parameters:
+      - name: tails-message
+    container:
+      image: alpine:3.6
+      command: [sh, -c, echo]
+      args: ["{{inputs.parameters.tails-message}}"]
