@@ -30,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    # This copies the file in this repo, particulary the yaml workflow spec needed for Argo.
+    # This copies the files in this repo, particulary the yaml workflow spec needed for Argo.
     - name: Step One - checkout files in repo
       uses: actions/checkout@master
 
-    # Get Credentials (the kubeconfig file) for the GKE cluster, copies kubeconfig into /github/workspace/.kube/config
+    # Get credentials (the kubeconfig file) the k8 cluster. Copies kubeconfig into /github/workspace/.kube/config
     - name: Step Two - Get kubeconfig file from GKE
       uses: machine-learning-apps/gke-kubeconfig@master
       with:
@@ -43,8 +43,8 @@ jobs:
         location_zone: ${{ secrets.LOCATION_ZONE }}
         cluster_name: ${{ secrets.CLUSTER_NAME }}
 
-
-    # This is the action that submits the Argo Workflow 
+      ###################################################
+      # This is the action that submits the Argo Workflow 
     - name: Step Three - Submit Argo Workflow from the examples/ folder in this repo
       id: argo
       uses: machine-learning-apps/actions-argo@master
