@@ -9,6 +9,10 @@ LABEL "repository"="https://github.com/machine-learning-apps/actions-argo"
 LABEL "homepage"="http://github.com/actions"
 LABEL "maintainer"="Hamel Husain <hamel.husain@gmail.com>"
 
+# Install Argo
+RUN curl -sSL -o /usr/local/bin/argo https://github.com/argoproj/argo/releases/download/v2.2.1/argo-linux-amd64
+RUN chmod +x /usr/local/bin/argo
+
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
