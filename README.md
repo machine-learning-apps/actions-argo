@@ -20,51 +20,37 @@ Model multi-step workflows as a sequence of tasks or capture the dependencies be
 
 ### Example Workflow That Uses This Action
 
-This action is the third step in the below example: `Submit Argo Deployment`
+This action is the third step in the below example: `Submit Argo Workflow from the examples/ folder in this repo`
 
 ```yaml
-name: ML Workflow Via Actions
-on:
-  pull_request:
-    types:
-      - labeled
-
+name: ML Workflows Via Actions
+on: [push]
 jobs:
-  gke-auth:
-    name: Argo Submit
+  build:
     runs-on: ubuntu-latest
     steps:
-    
-    # Copy the contents of the current branch into the Actions context
-    - name: Copy Repo Files
-      uses: actions/checkout@master
-      
-    # This Step Sets the Variable ARGO_TEST_RUN='True' if an open PR is labeled with `argo/run-test`
-    - name: Filter For PR Label
-      id: validate
-      run: python gke-argo-action/validate_payload.py
 
-    # The workflow is submitted to Argo only if ARGO_TEST_RUN='True'
-    - name: Submit Argo Deployment
+    # This copies the file in this repo, particulary the yaml workflow spec needed for Argo.
+    - name: Step One - checkout files in repo
+      uses: actions/checkout@master
+
+    # This is the action that submits the Argo Workflow 
+    - name: Step Three - Submit Argo Workflow from the examples/ folder in this repo
       id: argo
-      if: steps.validate.outputs.ARGO_TEST_RUN == 'True'
-      uses: machine-learning-apps/gke-argo@master #reference this Action
-      with:  # most of the inputs below are used to obtain authentication credentials for GKE
-        ARGO_URL: ${{ secrets.ARGO_URI }}
-        APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-        PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
-        LOCATION_ZONE: "us-west1-a"
-        CLUSTER_NAME: "github-actions-demo"
-        WORKFLOW_YAML_PATH: argo/nlp-model.yaml # the argo workflow file relative to the repo's root.
-        PARAMETER_FILE_PATH: argo/arguments-parameters.yml # optional parameter file.  This can be built dynamically inside the action or appended to from an existing file in the repo.
-        
-    # A comment is made on the PR with the URL to the Argo dashboard for the run.
-    - name: PR Comment - Argo Workflow URL
-      if: steps.validate.outputs.ARGO_TEST_RUN == 'True'
-      run: bash gke-argo-action/pr_comment.sh "The workflow can be viewed at $WORKFLOW_URL"
+      uses: machine-learning-apps/actions-argo@master
+      with:
+        argo_url: ${{ secrets.ARGO_URL }}
+        # below is a reference to a YAML file in this repo that defines the workflow.
+        workflow_yaml_path: "examples/coinflip.yaml"
+        parameter_file_path: "examples/arguments-parameters.yaml"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ISSUE_NUMBER: ${{ steps.validate.outputs.ISSUE_NUMBER }}
+        # KUBECONFIG tells kubectl where it can find your authentication information.  A config file was saved to this path in Step Two.
+        KUBECONFIG: '/github/workspace/.kube/config'
+
+      # This step displays the Argo URL, and illustrates how you can use the output of the previous Action.
+    - name: test argo outputs
+      run: echo "Argo URL $WORKFLOW_URL"
+      env:
         WORKFLOW_URL: ${{ steps.argo.outputs.WORKFLOW_URL }}
 ```
 
