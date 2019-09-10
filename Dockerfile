@@ -15,5 +15,6 @@ RUN chmod +x /usr/local/bin/argo
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+RUN gcloud components install kubectl
 
 ENTRYPOINT ["/entrypoint.sh"]
