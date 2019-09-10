@@ -9,7 +9,6 @@ jobs:
   
     # Get Credentials (the kubeconfig file) for the test GKE cluster
     - name: Get kubeconfig file from GKE
-      id: argo
       uses: machine-learning-apps/gke-kubeconfig@master
       with:
         application_credentials: ${{ secrets.APPLICATION_CREDENTIALS }}

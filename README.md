@@ -34,6 +34,16 @@ jobs:
     - name: Step One - checkout files in repo
       uses: actions/checkout@master
 
+    # Get Credentials (the kubeconfig file) for the GKE cluster, copies kubeconfig into /github/workspace/.kube/config
+    - name: Step Two - Get kubeconfig file from GKE
+      uses: machine-learning-apps/gke-kubeconfig@master
+      with:
+        application_credentials: ${{ secrets.APPLICATION_CREDENTIALS }}
+        project_id: ${{ secrets.PROJECT_ID }}
+        location_zone: ${{ secrets.LOCATION_ZONE }}
+        cluster_name: ${{ secrets.CLUSTER_NAME }}
+
+
     # This is the action that submits the Argo Workflow 
     - name: Step Three - Submit Argo Workflow from the examples/ folder in this repo
       id: argo
