@@ -1,4 +1,4 @@
-FROM google/cloud-sdk
+FROM google/cloud-sdk:alpine
 # this image has all the utilities that I need and is not too bloated
 
 LABEL "com.github.actions.name"="Submit Argo Workflows From GitHub"
