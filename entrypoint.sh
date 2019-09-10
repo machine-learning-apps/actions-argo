@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #This file retrieves GKE credentials and submits an Argo Workflow on K8s
 
