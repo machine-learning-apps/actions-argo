@@ -1,4 +1,5 @@
 FROM google/cloud-sdk
+# this image has all the utilities that I need and is not too bloated
 
 LABEL "com.github.actions.name"="Submit Argo Workflows From GitHub"
 LABEL "com.github.actions.description"="Trigger Argo (https://argoproj.github.io/) workflows from GitHub Actions"
