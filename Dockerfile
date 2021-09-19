@@ -7,7 +7,7 @@ LABEL "com.github.actions.icon"="upload-cloud"
 LABEL "com.github.actions.color"="purple"
 
 # Install Argo
-RUN curl -sSL -o /usr/local/bin/argo https://github.com/argoproj/argo/releases/download/v2.2.1/argo-linux-amd64
+RUN curl -sSL -o /usr/local/bin/argo https://github.com/argoproj/argo-workflows/releases/download/v2.2.1/argo-linux-amd64
 RUN chmod +x /usr/local/bin/argo
 
 ADD entrypoint.sh /entrypoint.sh
